@@ -2,85 +2,31 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Aromika Perfume</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #fafafa; }
-    .product { border: 1px solid #ddd; padding: 10px; margin-bottom: 15px; background: #fff; }
-    h2 { margin: 0 0 5px; }
-    .variants { margin: 5px 0; }
-    .cart { position: fixed; right: 20px; bottom: 20px; background: #333; color: #fff; padding: 15px; border-radius: 10px; }
-    .form-container { display:none; background:#fff; padding:15px; border:1px solid #ccc; margin-top:20px; }
-    label { display:block; margin-top:10px; }
-    input { width:100%; padding:8px; margin-top:5px; }
-    button { margin-top:10px; padding:10px 15px; background:#333; color:#fff; border:none; cursor:pointer; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aromika Perfume — Мужские ароматы</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Каталог Aromika Perfume</h1>
-  <div id="catalog"></div>
-  <div class="cart" id="cartBox">
-    Корзина: <span id="cartCount">0</span> шт. <br>
-    <button onclick="showForm()">Оформить заказ</button>
-  </div>
-  <div class="form-container" id="orderForm">
-    <h2>Ваши данные</h2>
-    <label>Имя<input type="text" id="name" required></label>
-    <label>Телефон<input type="text" id="phone" required></label>
-    <label>Город<input type="text" id="city" required></label>
-    <button onclick="submitOrder()">Подтвердить заказ</button>
-  </div>
-<script>
-let products = [];
-let cart = [];
+  <header>
+    <h1>Aromika Perfume</h1>
+    <p>Мужские ароматы</p>
+  </header>
 
-async function loadProducts() {
-  const res = await fetch('products.json');
-  products = await res.json();
-  const catalog = document.getElementById('catalog');
-  products.forEach(p => {
-    let div = document.createElement('div');
-    div.className = 'product';
-    div.innerHTML = `<h2>${p.name}</h2>
-                     <p><i>${p.subtitle}</i></p>
-                     <p>${p.gender}</p>
-                     <p>${p.description}</p>`;
-    p.variants.forEach(v => {
-      let btn = document.createElement('button');
-      btn.innerText = `${v.size} — ${v.price} ₽`;
-      btn.onclick = () => addToCart(p, v);
-      div.appendChild(btn);
-    });
-    catalog.appendChild(div);
-  });
-}
+  <main>
+    <section class="catalog" id="catalog"></section>
 
-function addToCart(product, variant) {
-  cart.push({product: product.name, size: variant.size, price: variant.price});
-  document.getElementById('cartCount').innerText = cart.length;
-}
+    <section class="order-form">
+      <h2>Оформление заказа</h2>
+      <form id="orderForm">
+        <label>Ваше имя:<br><input type="text" id="name" required></label><br>
+        <label>Телефон:<br><input type="tel" id="phone" required></label><br>
+        <label>Выбранный товар:<br><textarea id="selectedProduct" readonly></textarea></label><br>
+        <button type="submit">Отправить заказ</button>
+      </form>
+      <p id="statusMessage"></p>
+    </section>
+  </main>
 
-function showForm() {
-  if (cart.length === 0) { alert('Корзина пуста'); return; }
-  document.getElementById('orderForm').style.display = 'block';
-}
-
-function submitOrder() {
-  let name = document.getElementById('name').value.trim();
-  let phone = document.getElementById('phone').value.trim();
-  let city = document.getElementById('city').value.trim();
-  if (!name || !phone || !city) {
-    alert('Пожалуйста, заполните все поля');
-    return;
-  }
-  let order = {name, phone, city, cart};
-  alert('Заказ отправлен!');
-  console.log('Отправляем заказ в Telegram:', order);
-  cart = [];
-  document.getElementById('cartCount').innerText = 0;
-  document.getElementById('orderForm').style.display = 'none';
-}
-
-loadProducts();
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
